@@ -2,7 +2,6 @@
 
 namespace ZoiaProjects\ProjectBlog\Blog;
 
-
 class Comment
 {
     private int $id;

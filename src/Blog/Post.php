@@ -5,7 +5,6 @@ namespace ZoiaProjects\ProjectBlog\Blog;
 class Post
 {
     private int $id;
-    private int $idAuthor;
     public function __construct(
         private User $author,
         private string $headerText,
@@ -16,22 +15,6 @@ class Post
     public function __toString(): string
     {
         return $this->author . ' пишет: ' . $this->text;
-    }
-
-    /**
-     * @return int
-     */
-    public function getIdAuthor(): int
-    {
-        return $this->idAuthor;
-    }
-
-    /**
-     * @param int $idAuthor
-     */
-    public function setIdAuthor(int $idAuthor): void
-    {
-        $this->idAuthor = $idAuthor;
     }
 
     /**

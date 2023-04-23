@@ -14,13 +14,13 @@ use ZoiaProjects\ProjectBlog\Blog\Comment;
 $faker = Faker\Factory::create('ru_RU');
 //echo $faker->name() . PHP_EOL;
 
-$name1 = new Name($faker->firstName('male'), $faker->lastName('male'));
+$name1 = new Name($faker->firstName('male'), $faker->lastName());
 $newPerson = new Person($name1, new DateTimeImmutable());
-$name2 = new Name($faker->firstName('male'), $faker->lastName('male'));
+$name2 = new Name($faker->firstName('male'), $faker->lastName());
 $newPerson2 = new Person($name2, new DateTimeImmutable());
 
 $user1 = new User(1, $newPerson, 'Admin');
-$user2 = new User(2, $newPerson2, 'Юзер');
+$user2 = new User(2, $newPerson2, 'User');
 $newPost = new Post($user1,$faker->title(), $faker->sentence(5));
 
 //echo $newPost . PHP_EOL;
