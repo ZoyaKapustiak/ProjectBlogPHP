@@ -17,9 +17,7 @@ class Post
         return $this->author . ' пишет: ' . $this->text;
     }
 
-    /**
-     * @return string
-     */
+
     public function getHeaderText(): string
     {
         return $this->headerText;
