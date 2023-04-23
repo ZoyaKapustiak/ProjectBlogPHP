@@ -1,13 +1,14 @@
 <?php
 
-namespace src\Person;
+namespace ZoiaProjects\ProjectBlog\Person;
 
+use \DateTimeImmutable;
 class Person
 {
     public function __construct
     (
         private Name $name,
-        private \DateTimeImmutable $registeredOn,
+        private DateTimeImmutable $registeredOn,
     ) {}
     public function __toString(): string
     {

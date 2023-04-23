@@ -1,15 +1,13 @@
 <?php
 
-namespace src\Blog;
-
-use src\Person\Person;
+namespace ZoiaProjects\ProjectBlog\Blog;
 
 class Post
 {
     private int $id;
     private int $idAuthor;
     public function __construct(
-        private Person $author,
+        private User $author,
         private string $headerText,
         private string $text,
     ) {
@@ -69,17 +67,17 @@ class Post
     }
 
     /**
-     * @return Person
+     * @return User
      */
-    public function getAuthor(): Person
+    public function getAuthor(): User
     {
         return $this->author;
     }
 
     /**
-     * @param Person $author
+     * @param User $author
      */
-    public function setAuthor(Person $author): void
+    public function setAuthor(User $author): void
     {
         $this->author = $author;
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace src\Person;
+namespace ZoiaProjects\ProjectBlog\Person;
 class Name
 {
     private int $id;

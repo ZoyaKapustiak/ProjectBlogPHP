@@ -1,0 +1,20 @@
+{
+    "name": "zoiaprojects/projectblog",
+    "autoload": {
+        "psr-4": {
+            "ZoiaProjects\\ProjectBlog\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "ZoyaKapustiak",
+            "email": "102512424+ZoyaKapustiak@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "fakerphp/faker": "^1.21"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-latest"
+    }
+}

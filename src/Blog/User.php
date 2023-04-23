@@ -1,28 +1,29 @@
 <?php
 
-namespace src\Blog;
+namespace ZoiaProjects\ProjectBlog\Blog;
 
-use src\Person\Name;
+//use src\Person\Name;
+
+use ZoiaProjects\ProjectBlog\Person\Person;
 
 class User
 {
-    private int $id;
-    private Name $username;
-    private string $login;
-    public function __construct(Name $username, string $login)
-    {
-        $this->username = $username;
-        $this->login = $login;
+
+    public function __construct(
+        private int $id,
+        private Person $username,
+        private string $login
+    ) {
     }
-    public function User__toString()
+    public function __toString(): string
     {
-        return $this->username . 'login:' . $this->login;
+        return 'Юзер с именем: ' . $this->username . ' и логином:' . $this->login . PHP_EOL;
     }
 
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -30,7 +31,7 @@ class User
     /**
      * @param int $id
      */
-    public function setId($id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
