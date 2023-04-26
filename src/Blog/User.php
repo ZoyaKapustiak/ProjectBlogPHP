@@ -4,14 +4,15 @@ namespace ZoiaProjects\ProjectBlog\Blog;
 
 //use src\Person\Name;
 
-use ZoiaProjects\ProjectBlog\Person\Person;
+use ZoiaProjects\ProjectBlog\Person\Name;
+
 
 class User
 {
 
     public function __construct(
-        private int $id,
-        private Person $username,
+        private UUID $uuid,
+        private Name $username,
         private string $login
     ) {
     }
@@ -23,23 +24,15 @@ class User
     /**
      * @return int
      */
-    public function id(): int
+    public function uuid(): UUID
     {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
+        return $this->uuid;
     }
 
     /**
      * @return Name
      */
-    public function getUsername()
+    public function name(): Name
     {
         return $this->username;
     }
@@ -47,7 +40,7 @@ class User
     /**
      * @param Name $username
      */
-    public function setUsername($username)
+    public function setUsername(Name $username): void
     {
         $this->username = $username;
     }
@@ -55,7 +48,7 @@ class User
     /**
      * @return string
      */
-    public function getLogin()
+    public function getLogin(): string
     {
         return $this->login;
     }
@@ -63,7 +56,7 @@ class User
     /**
      * @param string $login
      */
-    public function setLogin($login)
+    public function setLogin($login): void
     {
         $this->login = $login;
     }

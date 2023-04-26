@@ -4,9 +4,8 @@ namespace ZoiaProjects\ProjectBlog\Blog;
 
 class Comment
 {
-    private int $id;
-
     public function __construct(
+        private UUID $uuid,
         private User $author,
         private Post $post,
         private string $comment,
@@ -69,9 +68,9 @@ class Comment
     /**
      * @return int
      */
-    public function getId(): int
+    public function uuid(): UUID
     {
-        return $this->id;
+        return $this->uuid;
     }
 
     /**
