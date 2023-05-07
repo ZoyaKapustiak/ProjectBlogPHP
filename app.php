@@ -1,7 +1,7 @@
 <?php
 
-use ZoiaProjects\ProjectBlog\Blog\Command\Arguments;
-use ZoiaProjects\ProjectBlog\Blog\Command\CreateUserCommand;
+use ZoiaProjects\ProjectBlog\Blog\Commands\Arguments;
+use ZoiaProjects\ProjectBlog\Blog\Commands\CreateUserCommand;
 use ZoiaProjects\ProjectBlog\Blog\Comment;
 use ZoiaProjects\ProjectBlog\Blog\Post;
 use ZoiaProjects\ProjectBlog\Blog\Repositories\UserRepository\SqliteUsersRepository;

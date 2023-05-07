@@ -49,7 +49,7 @@ class SqlitePostsRepository implements PostsRepositoryInterface
 //        new Name($result['firstName'], $result['lastName']), $result['login']);
     }
 
-    public function getPost(\PDOStatement $statement, $postUuid): Post
+    private function getPost(\PDOStatement $statement, $postUuid): Post
     {
         $result = $statement->fetch(\PDO::FETCH_ASSOC);
 
