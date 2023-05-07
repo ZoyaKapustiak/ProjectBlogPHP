@@ -34,7 +34,7 @@ class Name
     /**
      * @return string
      */
-    public function getFirstName(): string
+    public function first(): string
     {
         return $this->firstName;
     }
@@ -50,7 +50,7 @@ class Name
     /**
      * @return string
      */
-    public function getLastName(): string
+    public function last(): string
     {
         return $this->lastName;
     }

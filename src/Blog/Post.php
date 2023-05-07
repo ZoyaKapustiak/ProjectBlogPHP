@@ -4,8 +4,8 @@ namespace ZoiaProjects\ProjectBlog\Blog;
 
 class Post
 {
-    private int $id;
     public function __construct(
+        private UUID $uuid,
         private User $author,
         private string $headerText,
         private string $text,
@@ -66,16 +66,9 @@ class Post
     /**
      * @return int
      */
-    public function getId(): int
+    public function uuid(): UUID
     {
-        return $this->id;
+        return $this->uuid;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
 }

@@ -2,41 +2,38 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use ZoiaProjects\ProjectBlog\Person\Name;
-use ZoiaProjects\ProjectBlog\Person\Person;
-use ZoiaProjects\ProjectBlog\Blog\Post;
-use ZoiaProjects\ProjectBlog\Blog\User;
-use ZoiaProjects\ProjectBlog\Blog\Repositories\InMemoryUsersRepository;
-use ZoiaProjects\ProjectBlog\Blog\Exceptions\UserNotFoundException;
+$connection = new PDO('sqlite:' . __DIR__ . '/blog.sqlite');
+
+
 use ZoiaProjects\ProjectBlog\Blog\Comment;
+use ZoiaProjects\ProjectBlog\Blog\Post;
+use ZoiaProjects\ProjectBlog\Blog\Repositories\UserRepository\SqliteUsersRepository;
+use ZoiaProjects\ProjectBlog\Blog\User;
+use ZoiaProjects\ProjectBlog\Blog\UUID;
+use ZoiaProjects\ProjectBlog\Person\Name;
+use ZoiaProjects\ProjectBlog\Blog\Repositories\PostsRepository\SqlitePostsRepository;
+use ZoiaProjects\ProjectBlog\Blog\Repositories\CommentsRepository\SqliteCommentsRepository;
 
 
 $faker = Faker\Factory::create('ru_RU');
-//echo $faker->name() . PHP_EOL;
 
-$name1 = new Name($faker->firstName('male'), $faker->lastName());
-$newPerson = new Person($name1, new DateTimeImmutable());
-$name2 = new Name($faker->firstName('male'), $faker->lastName());
-$newPerson2 = new Person($name2, new DateTimeImmutable());
 
-$user1 = new User(1, $newPerson, 'Admin');
-$user2 = new User(2, $newPerson2, 'User');
-$newPost = new Post($user1,$faker->title(), $faker->sentence(5));
+$name1 = new Name($faker->firstName('male'), $faker->lastName('male'));
 
-//echo $newPost . PHP_EOL;
+$user1 = new User(UUID::random(), $name1, 'Admin');
 
-$routes = $argv[1] ?? null;
-switch ($routes) {
-    case 'user':
-        echo $user1;
-        break;
-    case 'post':
-        echo $newPost;
-        break;
-    case 'comment':
-        $comment = new Comment($user2, $newPost, $faker->text(5));
-        echo $comment;
-        break;
-    default:
-        echo 'Error try User, Post, Comment parametr';
-};
+$newPost = new Post(UUID::random(),$user1,$faker->title(), $faker->sentence(5));
+$newComment = new Comment(UUID::random(), $user1, $newPost, $faker->sentence);
+$userRepository = new SqliteUsersRepository($connection);
+$postRepository = new SqlitePostsRepository($connection);
+$commentRepository = new SqliteCommentsRepository($connection);
+
+$userRepository->save($user1);
+$postRepository->save($newPost);
+$commentRepository->save($newComment);
+
+$post = $postRepository->getByUUID(new UUID('b304793a-d48e-44cf-a85b-78a16d1640a7'));
+$comment = $commentRepository->getByUUID(new UUID('3e68892b-89bc-4136-a3ce-f6547f4f6b20'));
+echo $comment;
+
+
