@@ -1,6 +1,6 @@
 <?php
 
-namespace ZoiaProjects\ProjectBlog\Blog\Command;
+namespace ZoiaProjects\ProjectBlog\Blog\Commands;
 
 use ZoiaProjects\ProjectBlog\Blog\Exceptions\ArgumentsException;
 use ZoiaProjects\ProjectBlog\Blog\Exceptions\CommandException;
