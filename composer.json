@@ -13,7 +13,8 @@
     ],
     "require": {
       "ext-pdo": "*",
-        "symfony/polyfill-uuid": "^1.27"
+        "symfony/polyfill-uuid": "^1.27",
+      "ext-mbstring": "*"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",

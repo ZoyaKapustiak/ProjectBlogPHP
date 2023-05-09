@@ -12,4 +12,6 @@ interface CommentsRepositoryInterface
     public function getByUUID(UUID $uuid): Comment;
 
     public function getByLogin(string $login): Comment;
+
+    public function delete(UUID $uuid): void;
 }

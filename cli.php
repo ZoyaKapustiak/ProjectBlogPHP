@@ -28,12 +28,11 @@ $userRepository = new SqliteUsersRepository($connection);
 $postRepository = new SqlitePostsRepository($connection);
 $commentRepository = new SqliteCommentsRepository($connection);
 
-$userRepository->save($user1);
-$postRepository->save($newPost);
-$commentRepository->save($newComment);
-
-$post = $postRepository->getByUUID(new UUID('b304793a-d48e-44cf-a85b-78a16d1640a7'));
-$comment = $commentRepository->getByUUID(new UUID('3e68892b-89bc-4136-a3ce-f6547f4f6b20'));
-echo $comment;
+$postRepository->delete(new UUID('31487cb6-56f4-4e66-a322-2637b94ec2c7'));
+$commentRepository->delete(new UUID('2037d473-94f0-42df-9106-42b58a4fde8b'));
+//
+//$post = $postRepository->getByUUID(new UUID('b304793a-d48e-44cf-a85b-78a16d1640a7'));
+//$comment = $commentRepository->getByUUID(new UUID('3e68892b-89bc-4136-a3ce-f6547f4f6b20'));
+//echo $comment;
 
 

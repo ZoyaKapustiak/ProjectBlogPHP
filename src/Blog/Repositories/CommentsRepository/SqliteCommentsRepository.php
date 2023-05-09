@@ -17,9 +17,7 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
     public function __construct(
         private PDO $connection,
     ){
-
     }
-
     public function save(Comment $comment): void
     {
         $statement = $this->connection->prepare(
@@ -72,5 +70,14 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
             $post,
             $result['comment']
         );
+    }
+    public function delete(UUID $uuid): void
+    {
+        $statement = $this->connection->prepare(
+            'DELETE FROM comments WHERE uuid = :uuid'
+        );
+        $statement->execute([
+            ':uuid' => $uuid
+        ]);
     }
 }
