@@ -4,7 +4,7 @@ namespace ZoiaProjects\ProjectBlog\Blog;
 
 use ZoiaProjects\ProjectBlog\Blog\Exceptions\InvalidArgumentException;
 
-class UUID
+class UUID extends \ZoiaProjects\ProjectBlog\Blog\User
 {
     public function __construct(
         private string $uuidString,
