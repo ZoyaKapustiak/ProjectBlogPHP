@@ -58,7 +58,7 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
                 "Cannot find post: $commentUuid"
             );
         }
-    print_r($result);
+
         $userRepository = new SqliteUsersRepository($this->connection);
         $user = $userRepository->getByUUID(new UUID($result['authorUuid']));
         $postRepository = new SqlitePostsRepository($this->connection);
