@@ -5,6 +5,11 @@
             "ZoiaProjects\\ProjectBlog\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "ZoiaProjects\\ProjectBlog\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "ZoyaKapustiak",
@@ -14,7 +19,8 @@
     "require": {
       "ext-pdo": "*",
         "symfony/polyfill-uuid": "^1.27",
-      "ext-mbstring": "*"
+      "ext-mbstring": "*",
+        "psr/container": "^2.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
