@@ -41,7 +41,8 @@ try {
 $routes = [
     'GET' => [
         '/users/show' => FindByLogin::class,
-        '/post/getLikes' => FindByPostOrCommentLikes::class
+        '/post/getLikes' => FindByPostOrCommentLikes::class,
+        '/comment/getLikes' => FindByPostOrCommentLikes::class
     ],
     'POST' => [
         '/users/create' => CreateUser::class,

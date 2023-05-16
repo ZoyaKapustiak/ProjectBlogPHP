@@ -42,7 +42,7 @@ class SqliteLikesRepository implements LikesRepositoryInterface
     public function getByPostOrCommentUUID(UUID $postOrCommentUuid): array
     {
         $statement = $this->connection->prepare(
-            "SELECT uuid FROM likes WHERE postOrCommentUuid = :postOrCommentUuid"
+            "SELECT userUuid FROM likes WHERE postOrCommentUuid = :postOrCommentUuid"
         );
         $statement->execute([
             ":postOrCommentUuid" => $postOrCommentUuid
