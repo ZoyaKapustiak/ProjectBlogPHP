@@ -23,7 +23,7 @@ class SqliteLikesRepositoryTest extends TestCase
         ]);
         $connectionStub->method('prepare')->willReturn($statementMock);
 
-        $repositoryPost = new SqliteLikesRepository($connectionStub);
+        $repositoryPost = new SqliteLikesRepository($connectionStub, new DummyLogger());
         $repositoryPost->save(new Like(
                 new UUID('123e4567-e89b-12d3-a456-426614174000'),
                 new UUID('123e4567-e89b-12d3-a456-426614174001'),

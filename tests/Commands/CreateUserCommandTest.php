@@ -12,6 +12,7 @@ use ZoiaProjects\ProjectBlog\Blog\Commands\Arguments;
 use ZoiaProjects\ProjectBlog\Blog\Repositories\UserRepository\UsersRepositoryInterface;
 use ZoiaProjects\ProjectBlog\Blog\User;
 use ZoiaProjects\ProjectBlog\Blog\UUID;
+use ZoiaProjects\ProjectBlog\DummyLogger;
 
 class CreateUserCommandTest extends TestCase
 {
@@ -19,7 +20,7 @@ class CreateUserCommandTest extends TestCase
     {
         // Создаём объект команды
         // У команды одна зависимость - UsersRepositoryInterface
-        $command = new CreateUserCommand(new DummyUsersRepository());
+        $command = new CreateUserCommand(new DummyUsersRepository(), new DummyLogger());
         // Описываем тип ожидаемого исключения
         $this->expectException(CommandException::class);
         // и его сообщение
@@ -85,7 +86,7 @@ class CreateUserCommandTest extends TestCase
     public function testItRequiresLastName(): void
     {
     // Передаём в конструктор команды объект, возвращаемый нашей функцией
-        $command = new CreateUserCommand($this->makeUsersRepository());
+        $command = new CreateUserCommand($this->makeUsersRepository(), new DummyLogger());
         $this->expectException(ArgumentsException::class);
         $this->expectExceptionMessage('No such argument: lastName');
         $command->handle(new Arguments([
@@ -99,7 +100,7 @@ class CreateUserCommandTest extends TestCase
     public function testItRequiresFirstName(): void
     {
 // Вызываем ту же функцию
-        $command = new CreateUserCommand($this->makeUsersRepository());
+        $command = new CreateUserCommand($this->makeUsersRepository(), new DummyLogger());
         $this->expectException(ArgumentsException::class);
         $this->expectExceptionMessage('No such argument: firstName');
         $command->handle(new Arguments(['login' => 'Ivan']));
@@ -136,7 +137,7 @@ class CreateUserCommandTest extends TestCase
             }
         };
     // Передаём наш мок в команду
-        $command = new CreateUserCommand($usersRepository);
+        $command = new CreateUserCommand($usersRepository, new DummyLogger());
     // Запускаем команду
         $command->handle(new Arguments([
             'login' => 'Ivan',

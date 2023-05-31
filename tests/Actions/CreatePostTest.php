@@ -9,6 +9,7 @@ use ZoiaProjects\ProjectBlog\Blog\Repositories\PostsRepository\PostsRepositoryIn
 use ZoiaProjects\ProjectBlog\Blog\Repositories\UserRepository\UsersRepositoryInterface;
 use ZoiaProjects\ProjectBlog\Blog\User;
 use ZoiaProjects\ProjectBlog\Blog\UUID;
+use ZoiaProjects\ProjectBlog\DummyLogger;
 use ZoiaProjects\ProjectBlog\HTTP\Actions\Posts\CreatePost;
 use ZoiaProjects\ProjectBlog\HTTP\Request;
 use ZoiaProjects\ProjectBlog\HTTP\SuccessfulResponse;
@@ -47,7 +48,7 @@ class CreatePostTest extends TestCase
         );
         $postsRepository = $this->postsRepository([]);
 
-        $action = new CreatePost($postsRepository, $usersRepository);
+        $action = new CreatePost($postsRepository, $usersRepository, new DummyLogger());
 
         $response = $action->handle($request);
 
@@ -85,7 +86,7 @@ class CreatePostTest extends TestCase
         $usersRepository = $this->usersRepository([]);
         $postsRepository = $this->postsRepository([]);
 
-        $action = new CreatePost($postsRepository, $usersRepository);
+        $action = new CreatePost($postsRepository, $usersRepository, new DummyLogger());
 
         $response = $action->handle($request);
 
@@ -109,7 +110,7 @@ class CreatePostTest extends TestCase
 
         $postsRepository = $this->postsRepository([]);
 
-        $action = new CreatePost($postsRepository, $usersRepository);
+        $action = new CreatePost($postsRepository, $usersRepository, new DummyLogger());
 
         $response = $action->handle($request);
 
@@ -132,7 +133,7 @@ class CreatePostTest extends TestCase
 
         $postsRepository = $this->postsRepository([]);
 
-        $action = new CreatePost($postsRepository, $usersRepository);
+        $action = new CreatePost($postsRepository, $usersRepository, new DummyLogger());
 
         $response = $action->handle($request);
 

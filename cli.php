@@ -1,6 +1,8 @@
 <?php
 
-require_once __DIR__ . '/vendor/autoload.php';
+use Psr\Log\LoggerInterface;
+
+//require_once __DIR__ . '/vendor/autoload.php';
 
 $connection = new PDO('sqlite:' . __DIR__ . '/blog.sqlite');
 
@@ -19,15 +21,17 @@ use ZoiaProjects\ProjectBlog\Blog\Repositories\CommentsRepository\SqliteComments
 use ZoiaProjects\ProjectBlog\Blog\Like;
 
 $container = require __DIR__ . '/bootstrap.php';
+$logger = $container->get(LoggerInterface::class);
 
 
-//$command = $container->get(CreateUserCommand::class);
-//
-//try {
-//    $command->handle(Arguments::fromArgv($argv));
-//} catch (AppException $e) {
-//    echo "{$e->getMessage()}\n";
-//}
+
+try {
+    $command = $container->get(CreateUserCommand::class);
+    $command->handle(Arguments::fromArgv($argv));
+} catch (AppException $e) {
+    $logger->error($e->getMessage(), ['exception' => $e]);
+    echo "{$e->getMessage()}\n";
+}
 
 //
 //$faker = Faker\Factory::create('ru_RU');
