@@ -2,6 +2,7 @@
 
 namespace ZoiaProjects\ProjectBlog\HTTP\Actions\Posts;
 
+use Psr\Log\LoggerInterface;
 use ZoiaProjects\ProjectBlog\Blog\Exceptions\HttpException;
 use ZoiaProjects\ProjectBlog\Blog\Exceptions\InvalidArgumentException;
 use ZoiaProjects\ProjectBlog\Blog\Exceptions\UserNotFoundException;
@@ -12,6 +13,7 @@ use ZoiaProjects\ProjectBlog\Blog\Repositories\UserRepository\UsersRepositoryInt
 use ZoiaProjects\ProjectBlog\Blog\User;
 use ZoiaProjects\ProjectBlog\Blog\UUID;
 use ZoiaProjects\ProjectBlog\HTTP\Actions\ActionInterface;
+use ZoiaProjects\ProjectBlog\HTTP\Auth\IdentificationInterface;
 use ZoiaProjects\ProjectBlog\HTTP\Request;
 use ZoiaProjects\ProjectBlog\HTTP\Response;
 use ZoiaProjects\ProjectBlog\HTTP\SuccessfulResponse;
@@ -22,21 +24,24 @@ class CreatePost implements ActionInterface
 {
     public function __construct(
         public PostsRepositoryInterface $postsRepository,
-        public UsersRepositoryInterface $usersRepository,
+        private IdentificationInterface $identification,
+        private LoggerInterface $logger,
     ){}
 
     public function handle(Request $request): Response
     {
-        try {
-            $authorUuid = new UUID($request->jsonBodyField("authorUuid"));
-        } catch (HttpException | InvalidArgumentException $e) {
-            return new ErrorResponse($e->getMessage());
-        }
-        try {
-           $user = $this->usersRepository->getByUUID($authorUuid);
-        } catch (UserNotFoundException $e) {
-            return new ErrorResponse($e->getMessage());
-        }
+        $user = $this->identification->user($request);
+
+//        try {
+//            $authorUuid = new UUID($request->jsonBodyField("authorUuid"));
+//        } catch (HttpException | InvalidArgumentException $e) {
+//            return new ErrorResponse($e->getMessage());
+//        }
+//        try {
+//           $user = $this->usersRepository->getByUUID($authorUuid);
+//        } catch (UserNotFoundException $e) {
+//            return new ErrorResponse($e->getMessage());
+//        }
 
         try {
             $newPostUuid = UUID::random();
@@ -50,6 +55,7 @@ class CreatePost implements ActionInterface
             return new ErrorResponse($e->getMessage());
         }
         $this->postsRepository->save($post);
+        $this->logger->info("Post created: $newPostUuid");
         return new SuccessfulResponse([
             "uuid" => (string)$newPostUuid,
         ]);

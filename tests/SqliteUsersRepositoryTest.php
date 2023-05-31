@@ -20,7 +20,7 @@ class SqliteUsersRepositoryTest extends TestCase
         // Создаем стаб подключение
         $connectionStub = $this->createStub(PDO::class);
         //  Передаём в репозиторий stub подключение
-        $repository = new SqliteUsersRepository($connectionStub);
+        $repository = new SqliteUsersRepository($connectionStub, new DummyLogger());
         //  Создаём стаб запроса
         $statementStub = $this->createStub(PDOStatement::class);
         // Stub подключение будет возвращать другой стаб - стаб запроса - при вызове метода prepare
@@ -55,7 +55,7 @@ class SqliteUsersRepositoryTest extends TestCase
     // возвращает мок запроса
         $connectionStub->method('prepare')->willReturn($statementMock);
     // 1. Передаём в репозиторий стаб подключения
-        $repository = new SqliteUsersRepository($connectionStub);
+        $repository = new SqliteUsersRepository($connectionStub, new DummyLogger());
     // Вызываем метод сохранения пользователя
         $repository->save(
             new User( // Свойства пользователя точно такие,

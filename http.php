@@ -1,5 +1,6 @@
 <?php
 
+use Psr\Log\LoggerInterface;
 use ZoiaProjects\ProjectBlog\Blog\Exceptions\AppException;
 use ZoiaProjects\ProjectBlog\Blog\Repositories\PostsRepository\SqlitePostsRepository;
 use ZoiaProjects\ProjectBlog\Blog\Repositories\UserRepository\SqliteUsersRepository;
@@ -19,6 +20,8 @@ use ZoiaProjects\ProjectBlog\HTTP\Actions\Likes\CreateLike;
 
 $container = require __DIR__ . '/bootstrap.php';
 
+$logger = $container->get(LoggerInterface::class);
+
 $request = new Request(
     $_GET,
     $_SERVER,
@@ -27,13 +30,15 @@ $request = new Request(
 
 try {
     $path = $request->path();
-} catch (HttpException) {
+} catch (HttpException $e) {
+    $logger->warning($e->getMessage());
     (new ErrorResponse)->send();
     return;
 }
 try {
     $method = $request->method();
-} catch (HttpException) {
+} catch (HttpException $e) {
+    $logger->warning($e->getMessage());
     (new ErrorResponse)->send();
     return;
 }
@@ -59,16 +64,13 @@ $routes = [
 
 // Если у нас нет маршрутов для метода запроса -
 // возвращаем неуспешный ответ
-if (!array_key_exists($method, $routes)) {
+if (!array_key_exists($method, $routes) || !array_key_exists($path, $routes[$method])) {
+    $message = "Route not found: $method $path";
+    $logger->notice($message);
     (new ErrorResponse("Route not found: $method $path"))->send();
     return;
 }
 
-// Ищем маршрут среди маршрутов для этого метода
-if (!array_key_exists($path, $routes[$method])) {
-    (new ErrorResponse("Route not found: $method $path"))->send();
-    return;
-}
 
 // Выбираем действие по методу и пути
 $actionClassName = $routes[$method][$path];
@@ -78,5 +80,6 @@ try {
     $response = $action->handle($request);
     $response->send();
 } catch (Exception $e) {
+    $logger->error($e->getMessage(), ['exception' => $e]);
     (new ErrorResponse($e->getMessage()))->send();
 }

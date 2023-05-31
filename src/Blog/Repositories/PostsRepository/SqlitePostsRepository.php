@@ -4,6 +4,7 @@ namespace ZoiaProjects\ProjectBlog\Blog\Repositories\PostsRepository;
 
 use \PDO;
 use \PDOStatement;
+use Psr\Log\LoggerInterface;
 use ZoiaProjects\ProjectBlog\Blog\Exceptions\PostNotFoundException;
 use ZoiaProjects\ProjectBlog\Blog\Post;
 use ZoiaProjects\ProjectBlog\Blog\Repositories\PostsRepository\PostsRepositoryInterface;
@@ -16,11 +17,13 @@ class SqlitePostsRepository implements PostsRepositoryInterface
 
     public function __construct(
         private PDO $connection,
+        private LoggerInterface $logger
     ){
     }
 
     public function save(Post $post): void
     {
+        $this->logger->info("Create post command started");
         $statement = $this->connection->prepare(
             'INSERT INTO posts (uuid, authorUuid, headerText, text)
             VALUES (:uuid, :authorUuid, :headerText, :text)'
@@ -31,6 +34,7 @@ class SqlitePostsRepository implements PostsRepositoryInterface
             ':headerText' => $post->getHeaderText(),
             ':text' => $post->getText(),
         ]);
+        $this->logger->info("Post created: $post");
     }
 
     public function getByUUID(UUID $uuid): Post
@@ -54,6 +58,7 @@ class SqlitePostsRepository implements PostsRepositoryInterface
         $result = $statement->fetch(\PDO::FETCH_ASSOC);
 
         if ($result === false) {
+            $this->logger->warning("Cannot get post: $postUuid");
             throw new PostNotFoundException(
                 "Cannot find post: $postUuid"
             );

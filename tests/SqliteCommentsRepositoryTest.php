@@ -37,7 +37,7 @@ class SqliteCommentsRepositoryTest extends TestCase
             'Текст теста'
         );
 
-        $repositoryComment = new SqliteCommentsRepository($connectionStub);
+        $repositoryComment = new SqliteCommentsRepository($connectionStub, new DummyLogger());
         $repositoryComment->save(new Comment(
             new UUID('123e4567-e89b-12d3-a456-426614174000'),
             $author,
@@ -61,7 +61,7 @@ class SqliteCommentsRepositoryTest extends TestCase
             'text' => 'Текст'
         ]);
         $connectionStub->method('prepare')->willReturn($statementMock);
-        $repositoryComment = new SqliteCommentsRepository($connectionStub);
+        $repositoryComment = new SqliteCommentsRepository($connectionStub, new DummyLogger());
         $comment = $repositoryComment->getByUUID(new UUID('123e4567-e89b-12d3-a456-426614174000'));
 
         $this->assertSame('123e4567-e89b-12d3-a456-426614174000', (string)$comment->uuid());
@@ -73,7 +73,7 @@ class SqliteCommentsRepositoryTest extends TestCase
         $statementMock = $this->createMock(\PDOStatement::class);
         $statementMock->method('fetch')->willReturn(false);
         $connectionStub->method('prepare')->willReturn($statementMock);
-        $repositoryComment = new SqliteCommentsRepository($connectionStub);
+        $repositoryComment = new SqliteCommentsRepository($connectionStub, new DummyLogger());
         $this->expectException(CommentNotFoundException::class);
         $this->expectExceptionMessage('Cannot find post: 123e4567-e89b-12d3-a456-426614174000');
         $repositoryComment->getByUUID(new UUID('123e4567-e89b-12d3-a456-426614174000'));

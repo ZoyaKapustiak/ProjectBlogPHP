@@ -27,7 +27,7 @@ class SqlitePostsRepositoryTest extends TestCase
         ]);
         $connectionStub->method('prepare')->willReturn($statementMock);
 
-        $repositoryPost = new SqlitePostsRepository($connectionStub);
+        $repositoryPost = new SqlitePostsRepository($connectionStub, new DummyLogger());
         $repositoryPost->save(new Post(
             new UUID('123e4567-e89b-12d3-a456-426614174000'),
             new User(new UUID('123e4567-e89b-12d3-a456-426614174001'),
@@ -52,7 +52,7 @@ class SqlitePostsRepositoryTest extends TestCase
             'lastName' => 'Nikitin',
         ]);
         $connectionStub->method('prepare')->willReturn($statementMock);
-        $repositoryPost = new SqlitePostsRepository($connectionStub);
+        $repositoryPost = new SqlitePostsRepository($connectionStub, new DummyLogger());
         $post = $repositoryPost->getByUUID(new UUID('123e4567-e89b-12d3-a456-426614174000'));
         $this->assertSame('123e4567-e89b-12d3-a456-426614174000', (string)$post->uuid());
 
@@ -63,7 +63,7 @@ class SqlitePostsRepositoryTest extends TestCase
         $statementMock = $this->createMock(PDOStatement::class);
         $statementMock->method('fetch')->willReturn(false);
         $connectionStub->method('prepare')->willReturn($statementMock);
-        $repositoryPost = new SqlitePostsRepository($connectionStub);
+        $repositoryPost = new SqlitePostsRepository($connectionStub, new DummyLogger());
         $this->expectException(PostNotFoundException::class);
         $this->expectExceptionMessage('Cannot find post: 123e4567-e89b-12d3-a456-426614174000');
         $repositoryPost->getByUUID(new UUID('123e4567-e89b-12d3-a456-426614174000'));
