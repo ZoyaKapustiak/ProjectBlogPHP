@@ -13,16 +13,39 @@ class User
     public function __construct(
         private UUID $uuid,
         private Name $username,
-        private string $login
+        private string $login,
+        private string $hashedPassword,
     ) {
+    }
+    private static function hash(string $password, UUID $uuid): string
+    {
+        return hash('sha256', $uuid . $password);
+    }
+    public function checkPassword(string $password): string
+    {
+        return $this->hashedPassword === self::hash($password, $this->uuid);
     }
     public function __toString(): string
     {
         return 'Юзер с именем: ' . $this->username . ' и логином:' . $this->login . PHP_EOL;
     }
+    public static function createFrom(
+        string $login,
+        Name $name,
+        string $password,
+    ): self
+    {
+        $uuid = UUID::random();
+        return new self(
+            $uuid,
+            $name,
+            $login,
+            self::hash($password, $uuid),
+        );
+    }
 
     /**
-     * @return int
+     * @return UUID
      */
     public function uuid(): UUID
     {
@@ -59,6 +82,22 @@ class User
     public function setLogin($login): void
     {
         $this->login = $login;
+    }
+
+    /**
+     * @return string
+     */
+    public function hashedPassword(): string
+    {
+        return $this->hashedPassword;
+    }
+
+    /**
+     * @param string $password
+     */
+    public function setPassword(string $password): void
+    {
+        $this->password = $password;
     }
 
 }

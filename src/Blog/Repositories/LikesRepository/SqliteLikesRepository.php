@@ -4,8 +4,10 @@ namespace ZoiaProjects\ProjectBlog\Blog\Repositories\LikesRepository;
 
 use PDO;
 use Psr\Log\LoggerInterface;
+use ZoiaProjects\ProjectBlog\Blog\Exceptions\LikeAlreadyExists;
 use ZoiaProjects\ProjectBlog\Blog\Like;
 use ZoiaProjects\ProjectBlog\Blog\Repositories\UserRepository\SqliteUsersRepository;
+use ZoiaProjects\ProjectBlog\Blog\User;
 use ZoiaProjects\ProjectBlog\Blog\UUID;
 use ZoiaProjects\ProjectBlog\Blog\Exceptions\LikeNotFoundException;
 
@@ -18,30 +20,16 @@ class SqliteLikesRepository implements LikesRepositoryInterface
 
     public function save(Like $like): void
     {
-        $this->logger->info("Create like command started");
-
-        $statementUser = $this->connection->prepare(
-            'SELECT * FROM likes WHERE userUuid = :userUuid AND postOrCommentUuid = :postOrCommentUuid'
-        );
-        $statementUser->execute([
-            ':postOrCommentUuid' => $like->getPostOrCommentUuid(),
-            ':userUuid' => $like->getUserUuid(),
-        ]);
-        $result = $statementUser->fetch(PDO::FETCH_ASSOC);
-
-        if($result === false) {
             $statement = $this->connection->prepare(
-                'INSERT INTO likes (uuid, postOrCommentUuid, userUuid) VALUES (:uuid, :postOrCommentUuid, :userUuid)'
-            );
+                'INSERT INTO likes (uuid, postOrCommentUuid, userUuid) VALUES (:uuid, :postOrCommentUuid, :userUuid)');
+
             $statement->execute([
                 ":uuid" => $like->getUuid(),
                 ":postOrCommentUuid" => $like->getPostOrCommentUuid(),
                 ":userUuid" => $like->getUserUuid()
             ]);
-        } else {
-            echo 'Этот юзер уже поставил свой лайк';
-        }
-        $this->logger->info("Like created: $like");
+            $this->logger->info("Like created:" . $like->getUuid());
+
     }
 
     public function getByPostOrCommentUUID(UUID $postOrCommentUuid): array
@@ -71,11 +59,33 @@ class SqliteLikesRepository implements LikesRepositoryInterface
        }
        return $likes;
     }
-
-
     public function delete(UUID $uuid): void
     {
         // TODO: Implement delete() method.
+    }
+
+    /**
+     * @throws LikeAlreadyExists
+     */
+    public function checkUserLikeForPostOrCommentExists(string $postOrCommentUuid, User $user): void
+    {
+        $statement = $this->connection->prepare(
+            "SELECT * FROM likes WHERE  userUuid = :userUuid AND postOrCommentUuid = :postOrCommentUuid"
+        );
+        $statement->execute([
+            ":postOrCommentUuid" => (string)$postOrCommentUuid,
+            ":userUuid" => (string)$user->uuid()
+        ]);
+
+        $isExisted = $statement->fetch();
+
+        if ($isExisted) {
+            throw new LikeAlreadyExists(
+                'The users like for this post already exists'
+            );
+        }
+
+
     }
 
 }

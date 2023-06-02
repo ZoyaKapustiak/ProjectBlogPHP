@@ -33,7 +33,7 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
             ':postUuid' => $comment->getPost()->uuid(),
             ':comment' => $comment->getComment()
         ]);
-        $this->logger->info("Comment created: $comment");
+        $this->logger->info("Comment created: " . $comment->uuid());
     }
 
     public function getByUUID(UUID $uuid): Comment
@@ -50,7 +50,14 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
 
     public function getByLogin(string $login): Comment
     {
-        // TODO: Implement getByLogin() method.
+        $statement = $this->connection->prepare(
+            'SELECT * FROM comments WHERE login = :login '
+        );
+        $statement->execute([
+            ':login' => $login,
+        ]);
+
+        return $this->getPost($statement, $login);
     }
 
     public function getPost(\PDOStatement $statement, $commentUuid): Comment
@@ -64,9 +71,9 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
             );
         }
 
-        $userRepository = new SqliteUsersRepository($this->connection);
+        $userRepository = new SqliteUsersRepository($this->connection, $this->logger);
         $user = $userRepository->getByUUID(new UUID($result['authorUuid']));
-        $postRepository = new SqlitePostsRepository($this->connection);
+        $postRepository = new SqlitePostsRepository($this->connection, $this->logger);
         $post = $postRepository->getByUUID(new UUID($result['postUuid']));
 
         return new Comment(

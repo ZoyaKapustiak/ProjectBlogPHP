@@ -19,18 +19,23 @@ class SqliteUsersRepository implements UsersRepositoryInterface
     }
     public function save(User $user): void
     {
-        $this->logger->info("Create user command started");
+
         $statement = $this->connection->prepare(
-            'INSERT INTO users (firstName, lastName, uuid, login)
-            VALUES (:firstName, :lastName, :uuid, :login)'
+            'INSERT INTO users (firstName, lastName, uuid, login, password)
+            VALUES (:firstName, :lastName, :uuid, :login, :password)'
         );
+
+        //            ON CONFLICT (uuid) DO UPDATE SET
+//            firstName = :firstName,
+//            lastName = :lastName
         $statement->execute([
             ':firstName' => $user->name()->first(),
             ':lastName' => $user->name()->last(),
             ':uuid' => $user->uuid(),
             ':login' => $user->getLogin(),
+            ':password' => $user->hashedPassword()
         ]);
-        $this->logger->info("User created: $user");
+        $this->logger->info("User created: " . $user->getLogin());
     }
     public function getByUUID(UUID $uuid): User
     {
@@ -60,13 +65,13 @@ class SqliteUsersRepository implements UsersRepositoryInterface
         $statement->execute([(string)$findString]);
         $result = $statement->fetch(PDO::FETCH_ASSOC);
         if ($result === false) {
-            $this->logger->warning("Cannot get user: $findString");
             throw new UserNotFoundException('Cannot get user:' . $findString);
         }
         return new User(
             new UUID((string)$result['uuid']),
             new Name($result['firstName'], $result['lastName']),
-            $result['login'],
+            (string)$result['login'],
+            (string)$result['password']
         );
     }
 }

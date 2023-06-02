@@ -3,6 +3,7 @@
 namespace ZoiaProjects\ProjectBlog\HTTP\Actions\Posts;
 
 use Psr\Log\LoggerInterface;
+use ZoiaProjects\ProjectBlog\Blog\Exceptions\AuthException;
 use ZoiaProjects\ProjectBlog\Blog\Exceptions\HttpException;
 use ZoiaProjects\ProjectBlog\Blog\Exceptions\InvalidArgumentException;
 use ZoiaProjects\ProjectBlog\Blog\Exceptions\UserNotFoundException;
@@ -13,7 +14,9 @@ use ZoiaProjects\ProjectBlog\Blog\Repositories\UserRepository\UsersRepositoryInt
 use ZoiaProjects\ProjectBlog\Blog\User;
 use ZoiaProjects\ProjectBlog\Blog\UUID;
 use ZoiaProjects\ProjectBlog\HTTP\Actions\ActionInterface;
+use ZoiaProjects\ProjectBlog\HTTP\Auth\AuthenticationInterface;
 use ZoiaProjects\ProjectBlog\HTTP\Auth\IdentificationInterface;
+use ZoiaProjects\ProjectBlog\HTTP\Auth\TokenAuthenticationInterface;
 use ZoiaProjects\ProjectBlog\HTTP\Request;
 use ZoiaProjects\ProjectBlog\HTTP\Response;
 use ZoiaProjects\ProjectBlog\HTTP\SuccessfulResponse;
@@ -23,14 +26,19 @@ use ZoiaProjects\ProjectBlog\HTTP\ErrorResponse;
 class CreatePost implements ActionInterface
 {
     public function __construct(
-        public PostsRepositoryInterface $postsRepository,
-        private IdentificationInterface $identification,
-        private LoggerInterface $logger,
+        public PostsRepositoryInterface          $postsRepository,
+        private readonly TokenAuthenticationInterface $authentication,
+        private readonly LoggerInterface         $logger,
     ){}
 
     public function handle(Request $request): Response
     {
-        $user = $this->identification->user($request);
+        try {
+            $user = $this->authentication->user($request);
+        } catch (AuthException $e) {
+            return new ErrorResponse($e->getMessage());
+        }
+
 
 //        try {
 //            $authorUuid = new UUID($request->jsonBodyField("authorUuid"));
@@ -54,6 +62,7 @@ class CreatePost implements ActionInterface
         } catch (HttpException $e) {
             return new ErrorResponse($e->getMessage());
         }
+
         $this->postsRepository->save($post);
         $this->logger->info("Post created: $newPostUuid");
         return new SuccessfulResponse([

@@ -10,6 +10,7 @@ use ZoiaProjects\ProjectBlog\Blog\Repositories\CommentsRepository\SqliteComments
 use ZoiaProjects\ProjectBlog\Blog\User;
 use ZoiaProjects\ProjectBlog\Blog\UUID;
 use ZoiaProjects\ProjectBlog\Person\Name;
+use ZoiaProjects\ProjectBlog\DummyLogger;
 
 class SqliteCommentsRepositoryTest extends TestCase
 {
@@ -75,7 +76,7 @@ class SqliteCommentsRepositoryTest extends TestCase
         $connectionStub->method('prepare')->willReturn($statementMock);
         $repositoryComment = new SqliteCommentsRepository($connectionStub, new DummyLogger());
         $this->expectException(CommentNotFoundException::class);
-        $this->expectExceptionMessage('Cannot find post: 123e4567-e89b-12d3-a456-426614174000');
+        $this->expectExceptionMessage('Cannot find comment: 123e4567-e89b-12d3-a456-426614174000');
         $repositoryComment->getByUUID(new UUID('123e4567-e89b-12d3-a456-426614174000'));
     }
 }

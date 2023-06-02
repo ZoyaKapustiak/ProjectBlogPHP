@@ -2,6 +2,7 @@
 
 namespace ZoiaProjects\ProjectBlog\Blog\Repositories\PostsRepository;
 
+use Monolog\Logger;
 use \PDO;
 use \PDOStatement;
 use Psr\Log\LoggerInterface;
@@ -64,7 +65,7 @@ class SqlitePostsRepository implements PostsRepositoryInterface
             );
         }
 
-        $userRepository = new SqliteUsersRepository($this->connection);
+        $userRepository = new SqliteUsersRepository($this->connection, $this->logger);
         $user = $userRepository->getByUUID(new UUID($result['authorUuid']));
 
         return new Post(
