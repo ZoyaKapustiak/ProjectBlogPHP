@@ -12,7 +12,7 @@ use ZoiaProjects\ProjectBlog\Blog\UUID;
 class SqliteLikesRepositoryTest extends TestCase
 {
 
-    public function testItSavesCommentToDatabase(): void
+    public function testItSavesLikesToDatabase(): void
     {
         $connectionStub = $this->createStub(PDO::class);
         $statementMock = $this->createMock(PDOStatement::class);

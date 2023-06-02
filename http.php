@@ -4,6 +4,8 @@ use Psr\Log\LoggerInterface;
 use ZoiaProjects\ProjectBlog\Blog\Exceptions\AppException;
 use ZoiaProjects\ProjectBlog\Blog\Repositories\PostsRepository\SqlitePostsRepository;
 use ZoiaProjects\ProjectBlog\Blog\Repositories\UserRepository\SqliteUsersRepository;
+use ZoiaProjects\ProjectBlog\HTTP\Actions\AuthAction\LogIn;
+use ZoiaProjects\ProjectBlog\HTTP\Actions\AuthAction\LogOut;
 use ZoiaProjects\ProjectBlog\HTTP\Actions\Comments\DeleteComment;
 use ZoiaProjects\ProjectBlog\HTTP\Actions\Likes\FindByPostOrCommentLikes;
 use ZoiaProjects\ProjectBlog\HTTP\Actions\Users\FindByLogin;
@@ -50,6 +52,8 @@ $routes = [
         '/comment/getLikes' => FindByPostOrCommentLikes::class
     ],
     'POST' => [
+        '/login' => LogIn::class,
+        '/logout' => LogOut::class,
         '/users/create' => CreateUser::class,
         '/posts/create' => CreatePost::class,
         '/posts/comment' => CreateComment::class,
@@ -78,8 +82,10 @@ $action = $container->get($actionClassName);
 
 try {
     $response = $action->handle($request);
-    $response->send();
+
 } catch (Exception $e) {
     $logger->error($e->getMessage(), ['exception' => $e]);
     (new ErrorResponse($e->getMessage()))->send();
+    return;
 }
+$response->send();

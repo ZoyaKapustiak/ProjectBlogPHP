@@ -16,7 +16,20 @@ use ZoiaProjects\ProjectBlog\DummyLogger;
 
 class CreateUserCommandTest extends TestCase
 {
-    public function testItThrowsAnExceptionWhenUserAlreadyExists(): void
+    public function testItRequiresPassword(): void
+    {
+        $command = new CreateUserCommand(
+            $this->makeUsersRepository(),
+            new DummyLogger()
+        );
+        $this->expectException(ArgumentsException::class);
+        $this->expectExceptionMessage('No such argument: password');
+        $command->handle(new Arguments([
+            'login' => 'Ivan',
+        ]));
+    }
+
+        public function testItThrowsAnExceptionWhenUserAlreadyExists(): void
     {
         // Создаём объект команды
         // У команды одна зависимость - UsersRepositoryInterface
@@ -26,41 +39,12 @@ class CreateUserCommandTest extends TestCase
         // и его сообщение
         $this->expectExceptionMessage('User already exists: Ivan');
         // Запускаем команду с аргументами
-        $command->handle(new Arguments(['login' => 'Ivan']));
+        $command->handle(new Arguments([
+            'login' => 'Ivan',
+            'password' => '123'
+            ]));
     }
 
-//    public function testItRequiresFirstName(): void
-//    {
-//        // $usersRepository - это объект анонимного класса,
-//        // реализующего контракт UsersRepositoryInterface
-//        $usersRepository = new class implements UsersRepositoryInterface {
-//            public function save(User $user): void
-//            {
-//                // Ничего не делаем
-//            }
-//
-//            public function getByUUID(UUID $uuid): User
-//            {
-//                // И здесь ничего не делаем
-//                throw new UserNotFoundException("Not found");
-//            }
-//
-//            public function getByLogin(string $login): User
-//            {
-//
-//                // И здесь ничего не делаем
-//                throw new UserNotFoundException("Not found");
-//            }
-//        };
-//        // Передаём объект анонимного класса
-//        // в качестве реализации UsersRepositoryInterface
-//        $command = new CreateUserCommand($usersRepository);
-//        // Ожидаем, что будет брошено исключение
-//        $this->expectException(ArgumentsException::class);
-//        $this->expectExceptionMessage('No such argument: firstName');
-//        // Запускаем команду
-//        $command->handle(new Arguments(['login' => 'Ivan']));
-//    }
 
     // Функция возвращает объект типа UsersRepositoryInterface
     private function makeUsersRepository(): UsersRepositoryInterface
@@ -94,6 +78,7 @@ class CreateUserCommandTest extends TestCase
         // Нам нужно передать имя пользователя,
         // чтобы дойти до проверки наличия фамилии
             'firstName' => 'Ivan',
+            'password' => '123'
         ]));
     }
     // Тест проверяет, что команда действительно требует имя пользователя
@@ -103,7 +88,10 @@ class CreateUserCommandTest extends TestCase
         $command = new CreateUserCommand($this->makeUsersRepository(), new DummyLogger());
         $this->expectException(ArgumentsException::class);
         $this->expectExceptionMessage('No such argument: firstName');
-        $command->handle(new Arguments(['login' => 'Ivan']));
+        $command->handle(new Arguments([
+            'login' => 'Ivan',
+            'password' => '123'
+        ]));
     }
 
     // Тест, проверяющий, что команда сохраняет пользователя в репозитории
@@ -143,6 +131,7 @@ class CreateUserCommandTest extends TestCase
             'login' => 'Ivan',
             'firstName' => 'Ivan',
             'lastName' => 'Nikitin',
+            'password' => '123'
         ]));
     // Проверяем утверждение относительно мока,
     // а не утверждение относительно команды

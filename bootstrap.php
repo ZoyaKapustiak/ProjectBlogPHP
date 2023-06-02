@@ -14,9 +14,16 @@ use ZoiaProjects\ProjectBlog\Blog\Repositories\CommentsRepository\SqliteComments
 use ZoiaProjects\ProjectBlog\Blog\Repositories\LikesRepository\LikesRepositoryInterface;
 use ZoiaProjects\ProjectBlog\Blog\Repositories\LikesRepository\SqliteLikesRepository;
 use Dotenv\Dotenv;
+use ZoiaProjects\ProjectBlog\HTTP\Auth\AuthenticationInterface;
+use ZoiaProjects\ProjectBlog\HTTP\Auth\BearerTokenAuthentication;
 use ZoiaProjects\ProjectBlog\HTTP\Auth\IdentificationInterface;
 use ZoiaProjects\ProjectBlog\HTTP\Auth\JsonBodyLoginIdentification;
 use ZoiaProjects\ProjectBlog\HTTP\Auth\JsonBodyUuidIdentification;
+use ZoiaProjects\ProjectBlog\HTTP\Auth\PasswordAuthentication;
+use ZoiaProjects\ProjectBlog\HTTP\Auth\PasswordAuthenticationInterface;
+use ZoiaProjects\ProjectBlog\Blog\Repositories\AuthTokensRepository\AuthTokensRepositoryInterface;
+use ZoiaProjects\ProjectBlog\Blog\Repositories\AuthTokensRepository\SqliteAuthTokensRepository;
+use ZoiaProjects\ProjectBlog\HTTP\Auth\TokenAuthenticationInterface;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -24,9 +31,30 @@ require_once __DIR__ . '/vendor/autoload.php';
 Dotenv::createImmutable(__DIR__)->safeLoad();
 
 $container = new DIContainer();
+
 $container->bind(
     PDO::class,
     new PDO('sqlite:' . __DIR__ . '/' . $_ENV['SQLITE_DB_PATH'])
+);
+
+$container->bind(
+    PasswordAuthenticationInterface::class,
+    PasswordAuthentication::class
+);
+
+$container->bind(
+    TokenAuthenticationInterface::class,
+    BearerTokenAuthentication::class
+);
+
+$container->bind(
+    AuthTokensRepositoryInterface::class,
+    SqliteAuthTokensRepository::class
+);
+
+$container->bind(
+    AuthenticationInterface::class,
+    PasswordAuthentication::class
 );
 
 $container->bind(

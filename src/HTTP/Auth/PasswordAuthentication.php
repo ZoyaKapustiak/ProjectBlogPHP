@@ -9,12 +9,12 @@ use ZoiaProjects\ProjectBlog\Blog\Repositories\UserRepository\UsersRepositoryInt
 use ZoiaProjects\ProjectBlog\Blog\User;
 use ZoiaProjects\ProjectBlog\HTTP\Request;
 
-class JsonBodyLoginIdentification implements IdentificationInterface
+class PasswordAuthentication implements PasswordAuthenticationInterface
 {
     public function __construct(
         private UsersRepositoryInterface $usersRepository
-    )
-    {
+    ){
+
     }
 
     /**
@@ -28,9 +28,20 @@ class JsonBodyLoginIdentification implements IdentificationInterface
             throw new AuthException($e->getMessage());
         }
         try {
-            return $this->usersRepository->getByLogin($login);
+            $user = $this->usersRepository->getByLogin($login);
         } catch (UserNotFoundException $e) {
             throw new AuthException($e->getMessage());
         }
+        try {
+            $password = $request->jsonBodyField('password');
+        } catch (HttpException $e) {
+            throw new AuthException($e->getMessage());
+        }
+
+        if (!$user->checkPassword($password)) {
+            throw new AuthException('Wrong password');
+        }
+
+        return $user;
     }
 }

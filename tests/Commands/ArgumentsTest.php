@@ -6,9 +6,7 @@ use ZoiaProjects\ProjectBlog\Blog\Commands\Arguments;
 use PHPUnit\Framework\TestCase;
 use ZoiaProjects\ProjectBlog\Blog\Exceptions\ArgumentsException;
 
-/**
- *
- */
+
 class  ArgumentsTest extends TestCase
 {
   public function testItReturnsArgumentsValueByName(): void
@@ -55,6 +53,7 @@ class  ArgumentsTest extends TestCase
 
     /**
      * @dataProvider argumentsProvider
+     * @throws ArgumentsException
      */
     public function testItConvertsArgumentsToString($inputValue, $expectedValue): void
   {
