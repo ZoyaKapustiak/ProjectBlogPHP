@@ -18,6 +18,7 @@ class FindByLoginActionTest extends TestCase
     /**
      * @runInSeparateProcess
      * @preserveGlobalState disabled
+     * @throws \JsonException
      */
     // Тест, проверяющий, что будет возвращён неудачный ответ,
     // если в запросе нет параметра login
@@ -60,6 +61,7 @@ class FindByLoginActionTest extends TestCase
     /**
      * @runInSeparateProcess
      * @preserveGlobalState disabled
+     * @throws \JsonException
      */
     // Тест, проверяющий, что будет возвращён удачный ответ,
     // если пользователь найден
@@ -72,6 +74,7 @@ class FindByLoginActionTest extends TestCase
                 UUID::random(),
                 new Name('Ivan', 'Nikitin'),
                 'ivan',
+                '123'
             ),
         ]);
         $action = new FindByLogin($usersRepository);
@@ -88,7 +91,7 @@ class FindByLoginActionTest extends TestCase
         return new class($users) implements UsersRepositoryInterface {
 
             public function __construct(
-                private array $users
+                private readonly array $users
             ) {
             }
 

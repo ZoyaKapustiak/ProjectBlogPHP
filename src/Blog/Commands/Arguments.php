@@ -10,7 +10,6 @@ class Arguments
 
     public function __construct(iterable $arguments)
     {
-        print_r($arguments);
         foreach ($arguments as $argument => $value) {
 
             $stringValue = trim((string)$value);

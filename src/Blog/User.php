@@ -5,16 +5,17 @@ namespace ZoiaProjects\ProjectBlog\Blog;
 //use src\Person\Name;
 
 use ZoiaProjects\ProjectBlog\Person\Name;
+use ZoiaProjects\ProjectBlog\Blog\UUID;
 
 
-class User
+class User extends UUID
 {
 
     public function __construct(
-        private UUID $uuid,
-        private Name $username,
-        private string $login,
-        private string $hashedPassword,
+        private readonly UUID $uuid,
+        private Name          $username,
+        private string        $login,
+        private string        $hashedPassword,
     ) {
     }
     private static function hash(string $password, UUID $uuid): string
@@ -97,7 +98,7 @@ class User
      */
     public function setPassword(string $password): void
     {
-        $this->password = $password;
+        $this->hashedPassword = $password;
     }
 
 }

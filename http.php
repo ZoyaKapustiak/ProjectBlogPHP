@@ -7,7 +7,9 @@ use ZoiaProjects\ProjectBlog\Blog\Repositories\UserRepository\SqliteUsersReposit
 use ZoiaProjects\ProjectBlog\HTTP\Actions\AuthAction\LogIn;
 use ZoiaProjects\ProjectBlog\HTTP\Actions\AuthAction\LogOut;
 use ZoiaProjects\ProjectBlog\HTTP\Actions\Comments\DeleteComment;
-use ZoiaProjects\ProjectBlog\HTTP\Actions\Likes\FindByPostOrCommentLikes;
+use ZoiaProjects\ProjectBlog\HTTP\Actions\Likes\CreateLikeComment;
+use ZoiaProjects\ProjectBlog\HTTP\Actions\Likes\FindByCommentLikes;
+use ZoiaProjects\ProjectBlog\HTTP\Actions\Likes\FindByPostLikes;
 use ZoiaProjects\ProjectBlog\HTTP\Actions\Users\FindByLogin;
 use ZoiaProjects\ProjectBlog\HTTP\Request;
 use ZoiaProjects\ProjectBlog\HTTP\SuccessfulResponse;
@@ -18,7 +20,7 @@ use ZoiaProjects\ProjectBlog\HTTP\Actions\Posts\CreatePost;
 use ZoiaProjects\ProjectBlog\HTTP\Actions\Comments\CreateComment;
 use ZoiaProjects\ProjectBlog\Blog\Repositories\CommentsRepository\SqliteCommentsRepository;
 use ZoiaProjects\ProjectBlog\HTTP\Actions\Posts\DeletePost;
-use ZoiaProjects\ProjectBlog\HTTP\Actions\Likes\CreateLike;
+use ZoiaProjects\ProjectBlog\HTTP\Actions\Likes\CreateLikePost;
 
 $container = require __DIR__ . '/bootstrap.php';
 
@@ -47,18 +49,18 @@ try {
 
 $routes = [
     'GET' => [
-        '/users/show' => FindByLogin::class,
-        '/post/getLikes' => FindByPostOrCommentLikes::class,
-        '/comment/getLikes' => FindByPostOrCommentLikes::class
+        '/user/show' => FindByLogin::class,
+        '/post/getLikes' => FindByPostLikes::class,
+        '/comment/getLikes' => FindByCommentLikes::class
     ],
     'POST' => [
         '/login' => LogIn::class,
         '/logout' => LogOut::class,
         '/users/create' => CreateUser::class,
-        '/posts/create' => CreatePost::class,
-        '/posts/comment' => CreateComment::class,
-        '/post/like' => CreateLike::class,
-        '/comment/like' => CreateLike::class,
+        '/post/create' => CreatePost::class,
+        '/post/comment' => CreateComment::class,
+        '/post/like' => CreateLikePost::class,
+        '/comment/like' => CreateLikeComment::class,
     ],
     'DELETE' => [
         '/posts' => DeletePost::class,

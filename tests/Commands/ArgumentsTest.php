@@ -9,7 +9,10 @@ use ZoiaProjects\ProjectBlog\Blog\Exceptions\ArgumentsException;
 
 class  ArgumentsTest extends TestCase
 {
-  public function testItReturnsArgumentsValueByName(): void
+    /**
+     * @throws ArgumentsException
+     */
+    public function testItReturnsArgumentsValueByName(): void
   {
   // Подготовка
   $arguments = new Arguments(['some_key' => 'some_value']);
@@ -19,7 +22,11 @@ class  ArgumentsTest extends TestCase
       // assertEquals - проверяет равенство значений, но не типов
   $this->assertEquals('some_value', $value);
   }
-  public function testItReturnsValuesAsString(): void
+
+    /**
+     * @throws ArgumentsException
+     */
+    public function testItReturnsValuesAsString(): void
   {
       $arguments = new Arguments(['some_key' => 123]);
 
@@ -40,7 +47,7 @@ class  ArgumentsTest extends TestCase
     /**
      * @return iterable
      */
-    public function argumentsProvider(): iterable
+    public static function argumentsProvider(): iterable
   {
       return [
           ['some_string', 'some_string'],

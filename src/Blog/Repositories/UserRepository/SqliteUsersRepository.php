@@ -3,6 +3,7 @@
 namespace ZoiaProjects\ProjectBlog\Blog\Repositories\UserRepository;
 use PDO;
 use Psr\Log\LoggerInterface;
+use ZoiaProjects\ProjectBlog\Blog\Exceptions\InvalidArgumentException;
 use ZoiaProjects\ProjectBlog\Blog\Exceptions\UserNotFoundException;
 use ZoiaProjects\ProjectBlog\Blog\User;
 use ZoiaProjects\ProjectBlog\Blog\UUID;
@@ -22,7 +23,8 @@ class SqliteUsersRepository implements UsersRepositoryInterface
 
         $statement = $this->connection->prepare(
             'INSERT INTO users (firstName, lastName, uuid, login, password)
-            VALUES (:firstName, :lastName, :uuid, :login, :password)'
+            VALUES (:firstName, :lastName, :uuid, :login, :password)
+            ON CONFLICT (uuid) DO UPDATE SET firstName = :firstName, lastName = :lastName'
         );
 
         //            ON CONFLICT (uuid) DO UPDATE SET
@@ -37,6 +39,11 @@ class SqliteUsersRepository implements UsersRepositoryInterface
         ]);
         $this->logger->info("User created: " . $user->getLogin());
     }
+
+    /**
+     * @throws InvalidArgumentException
+     * @throws UserNotFoundException
+     */
     public function getByUUID(UUID $uuid): User
     {
 
@@ -46,8 +53,6 @@ class SqliteUsersRepository implements UsersRepositoryInterface
 
 
         return $this->getUser($statement, (string)$uuid);
-//        return new User(new UUID($result['uuid']),
-//        new Name($result['firstName'], $result['lastName']), $result['login']);
     }
     public function getByLogin(string $login): User
     {
@@ -60,6 +65,11 @@ class SqliteUsersRepository implements UsersRepositoryInterface
 
         return $this->getUser($statement, $login);
     }
+
+    /**
+     * @throws InvalidArgumentException
+     * @throws UserNotFoundException
+     */
     public function getUser(PDOStatement $statement, $findString): User
     {
         $statement->execute([(string)$findString]);

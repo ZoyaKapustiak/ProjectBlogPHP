@@ -14,6 +14,7 @@ use ZoiaProjects\ProjectBlog\HTTP\Actions\Posts\CreatePost;
 use ZoiaProjects\ProjectBlog\HTTP\Auth\IdentificationInterface;
 use ZoiaProjects\ProjectBlog\HTTP\Auth\JsonBodyLoginIdentification;
 use ZoiaProjects\ProjectBlog\HTTP\Auth\JsonBodyUuidIdentification;
+use ZoiaProjects\ProjectBlog\HTTP\Auth\TokenAuthenticationInterface;
 use ZoiaProjects\ProjectBlog\HTTP\Request;
 use ZoiaProjects\ProjectBlog\HTTP\SuccessfulResponse;
 use ZoiaProjects\ProjectBlog\Person\Name;
@@ -34,7 +35,7 @@ class CreatePostTest extends TestCase
     public function testItReturnSuccessfulResponse(): void
     {
         $postsRepositoryStub = $this->createStub(PostsRepositoryInterface::class);
-        $authenticationStub = $this->createStub(JsonBodyLoginIdentification::class);
+        $authenticationStub = $this->createStub(TokenAuthenticationInterface::class);
 
         $authenticationStub
             ->method('user')
@@ -43,6 +44,7 @@ class CreatePostTest extends TestCase
                     new UUID("10373537-0805-4d7a-830e-22b481b4859c"),
                     new Name('first', 'last'),
                     'username',
+                    '123'
                 )
             );
 
@@ -79,7 +81,7 @@ class CreatePostTest extends TestCase
         $request = new Request(get: [], server: [], body: '{"authorUuid":"error","headerText":"title","text":"text"}');
 
         $postsRepository = $this->postsRepository([]);
-        $identificationStub = $this->createStub(JsonBodyLoginIdentification::class);
+        $identificationStub = $this->createStub(TokenAuthenticationInterface::class);
         $identificationStub->method('user')->willThrowException(new AuthException('Malformed UUID: error'));
 
         $action = new CreatePost($postsRepository, $identificationStub, new DummyLogger());
@@ -98,7 +100,7 @@ class CreatePostTest extends TestCase
 
         $postsRepository = $this->postsRepository([]);
 //        $postsRepositoryStub = $this->createStub(PostsRepositoryInterface::class);
-        $authenticationStub = $this->createStub(JsonBodyUuidIdentification::class);
+        $authenticationStub = $this->createStub(TokenAuthenticationInterface::class);
         $authenticationStub
             ->method('user')->willThrowException(new AuthException("Cannot find user: 10373537-0805-4d7a-830e-22b481b4859c"));
 
@@ -117,11 +119,12 @@ class CreatePostTest extends TestCase
                 new UUID("10373537-0805-4d7a-830e-22b481b4859c"),
                 new Name('Ivan', 'Nikitin'),
                 'login',
+                '123'
             ),
         ]);
 
         $postsRepository = $this->postsRepository([]);
-        $authenticationStub = $this->createStub(JsonBodyUuidIdentification::class);
+        $authenticationStub = $this->createStub(TokenAuthenticationInterface::class);
         $authenticationStub
             ->method('user')
             ->willReturn(
@@ -129,6 +132,7 @@ class CreatePostTest extends TestCase
                     new UUID("10373537-0805-4d7a-830e-22b481b4859c"),
                     new Name('Ivan', 'Nikitin'),
                     'login',
+                    '123'
                 )
             );
 
