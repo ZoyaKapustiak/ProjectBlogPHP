@@ -9,7 +9,7 @@ use ZoiaProjects\ProjectBlog\Blog\Repositories\UserRepository\SqliteUsersReposit
 use ZoiaProjects\ProjectBlog\Blog\User;
 use ZoiaProjects\ProjectBlog\Blog\UUID;
 use ZoiaProjects\ProjectBlog\Person\Name;
-use ZoiaProjects\ProjectBlog\Blog\Repositories\LikesRepository\SqliteLikesPostPostRepository;
+use ZoiaProjects\ProjectBlog\Blog\Repositories\LikesRepository\SqliteLikesPostRepository;
 
 require_once __DIR__ . '/vendor/autoload.php';
 $connection = new PDO('sqlite:' . __DIR__ . '/blog.sqlite');
@@ -21,7 +21,7 @@ $newLike = new Like(
     new UUID('eb229f0c-9477-407e-80e2-e40ca1908cc2'),
     new UUID('6dab4e05-74ea-48fc-87d2-6dfe18955a52')
 );
-$likeRepo = new SqliteLikesPostPostRepository($connection);
+$likeRepo = new SqliteLikesPostRepository($connection);
 $likeRepo->save($newLike);
 print_r($likeRepo->getByPostOrCommentUUID(new UUID('eb229f0c-9477-407e-80e2-e40ca1908cc1')));
 //$likeRepo->getByPostUUID()

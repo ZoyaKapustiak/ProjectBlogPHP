@@ -13,7 +13,7 @@ use ZoiaProjects\ProjectBlog\Blog\UUID;
 use ZoiaProjects\ProjectBlog\Blog\Exceptions\LikeNotFoundException;
 
 
-readonly class SqliteLikesPostPostRepository implements LikesPostRepositoryInterface
+readonly class SqliteLikesPostRepository implements LikesPostRepositoryInterface
 {
     public function __construct(
         private PDO             $connection,

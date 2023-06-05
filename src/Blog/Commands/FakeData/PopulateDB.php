@@ -54,7 +54,7 @@ class PopulateDB extends Command
         $userCount = (int)$input->getOption('users-number');
         $postCount = (int)$input->getOption('posts-number');
         if(empty($userCount) && empty($postCount)) {
-            $output->writeln('Input count users and count posts will write one user');
+            $output->writeln('Input count users and count posts');
             return Command::SUCCESS;
         }
         $users = [];
