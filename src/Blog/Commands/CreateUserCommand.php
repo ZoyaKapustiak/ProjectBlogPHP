@@ -40,8 +40,7 @@ class CreateUserCommand
         if ($this->userExists($login)) {
             $this->logger->warning("User already exists: $login");
 // Бросаем исключение, если пользователь уже существует
-//            throw new CommandException("User already exists: $username");
-            return;
+            throw new CommandException("User already exists: $login");
         }
        $user = User::createFrom(
            $login,

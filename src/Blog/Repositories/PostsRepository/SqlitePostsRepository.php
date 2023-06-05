@@ -2,22 +2,22 @@
 
 namespace ZoiaProjects\ProjectBlog\Blog\Repositories\PostsRepository;
 
-use Monolog\Logger;
-use \PDO;
-use \PDOStatement;
+
+use PDO;
+use PDOStatement;
 use Psr\Log\LoggerInterface;
+use ZoiaProjects\ProjectBlog\Blog\Exceptions\InvalidArgumentException;
 use ZoiaProjects\ProjectBlog\Blog\Exceptions\PostNotFoundException;
+use ZoiaProjects\ProjectBlog\Blog\Exceptions\PostRepositoryException;
 use ZoiaProjects\ProjectBlog\Blog\Post;
-use ZoiaProjects\ProjectBlog\Blog\Repositories\PostsRepository\PostsRepositoryInterface;
 use ZoiaProjects\ProjectBlog\Blog\Repositories\UserRepository\SqliteUsersRepository;
-use ZoiaProjects\ProjectBlog\Blog\User;
 use ZoiaProjects\ProjectBlog\Blog\UUID;
 
-class SqlitePostsRepository implements PostsRepositoryInterface
+readonly class SqlitePostsRepository implements PostsRepositoryInterface
 {
 
     public function __construct(
-        private PDO $connection,
+        private PDO             $connection,
         private LoggerInterface $logger
     ){
     }
@@ -38,6 +38,9 @@ class SqlitePostsRepository implements PostsRepositoryInterface
         $this->logger->info("Post created: $post");
     }
 
+    /**
+     * @throws PostNotFoundException|InvalidArgumentException
+     */
     public function getByUUID(UUID $uuid): Post
     {
         $statement = $this->connection->prepare(
@@ -54,9 +57,13 @@ class SqlitePostsRepository implements PostsRepositoryInterface
 //        new Name($result['firstName'], $result['lastName']), $result['login']);
     }
 
-    private function getPost(\PDOStatement $statement, $postUuid): Post
+    /**
+     * @throws InvalidArgumentException
+     * @throws PostNotFoundException
+     */
+    private function getPost(PDOStatement $statement, $postUuid): Post
     {
-        $result = $statement->fetch(\PDO::FETCH_ASSOC);
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
 
         if ($result === false) {
             $this->logger->warning("Cannot get post: $postUuid");
@@ -75,13 +82,24 @@ class SqlitePostsRepository implements PostsRepositoryInterface
             $result['text']
         );
     }
+
+    /**
+     * @throws PostRepositoryException
+     */
     public function delete(UUID $uuid): void
     {
-        $statement = $this->connection->prepare(
-            'DELETE FROM posts WHERE uuid = :uuid'
-        );
-        $statement->execute([
-            ':uuid' => $uuid
-        ]);
+        try {
+            $statement = $this->connection->prepare(
+                'DELETE FROM posts WHERE uuid = :uuid'
+            );
+            $statement->execute([
+                ':uuid' => (string)$uuid
+            ]);
+        } catch (\PDOException $e) {
+            throw new PostRepositoryException(
+                $e->getMessage(), (int)$e->getCode(), $e
+            );
+        }
+
     }
 }

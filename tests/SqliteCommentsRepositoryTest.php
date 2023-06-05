@@ -29,7 +29,8 @@ class SqliteCommentsRepositoryTest extends TestCase
         $author = new User(
             new UUID('123e4567-e89b-12d3-a456-426614174001'),
             new Name('Zoia', 'Kapustiak'),
-            'admin'
+            'admin',
+            '123'
         );
         $post = new Post(
             new UUID('123e4567-e89b-12d3-a456-426614174002'),

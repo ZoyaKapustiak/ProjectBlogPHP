@@ -7,8 +7,8 @@ use ZoiaProjects\ProjectBlog\Blog\Exceptions\AuthException;
 use ZoiaProjects\ProjectBlog\Blog\Exceptions\HttpException;
 use ZoiaProjects\ProjectBlog\Blog\Exceptions\InvalidArgumentException;
 
-use ZoiaProjects\ProjectBlog\Blog\Like;
-use ZoiaProjects\ProjectBlog\Blog\Repositories\LikesRepository\LikesRepositoryInterface;
+use ZoiaProjects\ProjectBlog\Blog\LikePost;
+use ZoiaProjects\ProjectBlog\Blog\Repositories\LikesRepository\LikesPostRepositoryInterface;
 use ZoiaProjects\ProjectBlog\Blog\UUID;
 use ZoiaProjects\ProjectBlog\HTTP\Actions\ActionInterface;
 use ZoiaProjects\ProjectBlog\HTTP\Auth\TokenAuthenticationInterface;
@@ -17,10 +17,10 @@ use ZoiaProjects\ProjectBlog\HTTP\Request;
 use ZoiaProjects\ProjectBlog\HTTP\Response;
 use ZoiaProjects\ProjectBlog\HTTP\SuccessfulResponse;
 
-class CreateLike implements ActionInterface
+class CreateLikePost implements ActionInterface
 {
     public function __construct(
-        public LikesRepositoryInterface $likesRepository,
+        public LikesPostRepositoryInterface           $likesRepository,
         private readonly TokenAuthenticationInterface $authentication,
 
     ) {}
@@ -34,15 +34,15 @@ class CreateLike implements ActionInterface
         }
         $newUuid = UUID::random();
         try {
-            $postUuid = $request->jsonBodyField("postOrCommentUuid");
-        } catch (HttpException | InvalidArgumentException $e) {
+            $postUuid = $request->jsonBodyField("postUuid");
+        } catch (HttpException $e) {
             return new ErrorResponse($e->getMessage());
         }
-        $this->likesRepository->checkUserLikeForPostOrCommentExists($postUuid, $user);
+        $this->likesRepository->checkUserLikeForPostExists($postUuid, $user->uuid());
 
         try {
-            $like = new Like($newUuid, new UUID($postUuid), new UUID($user->uuid()));
-        } catch (HttpException $e) {
+            $like = new LikePost($newUuid, $user->uuid(), new UUID($postUuid));
+        } catch (InvalidArgumentException $e) {
             return new ErrorResponse($e->getMessage());
         }
 
