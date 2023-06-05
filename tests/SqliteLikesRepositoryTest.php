@@ -6,9 +6,11 @@ use PDO;
 use PDOStatement;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
+use ZoiaProjects\ProjectBlog\Blog\Exceptions\InvalidArgumentException;
 use ZoiaProjects\ProjectBlog\Blog\Exceptions\LikeNotFoundException;
 use ZoiaProjects\ProjectBlog\Blog\Like;
-use ZoiaProjects\ProjectBlog\Blog\Repositories\LikesRepository\SqliteLikesPostPostRepository;
+use ZoiaProjects\ProjectBlog\Blog\LikePost;
+use ZoiaProjects\ProjectBlog\Blog\Repositories\LikesRepository\SqliteLikesPostRepository;
 use ZoiaProjects\ProjectBlog\Blog\UUID;
 
 class SqliteLikesRepositoryTest extends TestCase
@@ -21,15 +23,15 @@ class SqliteLikesRepositoryTest extends TestCase
         $statementMock->expects($this->once())->method('execute')->with([
             ':uuid' => '123e4567-e89b-12d3-a456-426614174000',
             ':userUuid' => '123e4567-e89b-12d3-a456-426614174002',
-            ':postOrCommentUuid' => '123e4567-e89b-12d3-a456-426614174001'
+            ':postUuid' => '123e4567-e89b-12d3-a456-426614174001'
         ]);
         $connectionStub->method('prepare')->willReturn($statementMock);
 
-        $repositoryPost = new SqliteLikesPostPostRepository($connectionStub, new DummyLogger());
-        $like = new Like(
+        $repositoryPost = new SqliteLikesPostRepository($connectionStub, new DummyLogger());
+        $like = new LikePost(
             new UUID('123e4567-e89b-12d3-a456-426614174000'),
-            new UUID('123e4567-e89b-12d3-a456-426614174001'),
-            new UUID('123e4567-e89b-12d3-a456-426614174002')
+            new UUID('123e4567-e89b-12d3-a456-426614174002'),
+            new UUID('123e4567-e89b-12d3-a456-426614174001')
         );
         $repositoryPost->save($like);
     }
@@ -37,6 +39,7 @@ class SqliteLikesRepositoryTest extends TestCase
     /**
      * @throws LikeNotFoundException
      * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function testItGetPostByUuidNotFound(): void
     {
@@ -53,10 +56,10 @@ class SqliteLikesRepositoryTest extends TestCase
             'postUuid' => '123e4567-e89b-12d3-a456-426614174003'
         ]);
         $connectionStub->method('prepare')->willReturn($statementMock);
-        $repositoryLike = new SqliteLikesPostPostRepository($connectionStub, new DummyLogger());
+        $repositoryLike = new SqliteLikesPostRepository($connectionStub, new DummyLogger());
         $this->expectException(LikeNotFoundException::class);
         $this->expectExceptionMessage('No likes to post with uuid = : 123e4567-e89b-12d3-a456-426614174000');
-        $repositoryLike->getByPostOrCommentUUID(new UUID('123e4567-e89b-12d3-a456-426614174000'));
+        $repositoryLike->getByPostUUID(new UUID('123e4567-e89b-12d3-a456-426614174000'));
     }
 
 }

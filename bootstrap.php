@@ -17,7 +17,7 @@ use ZoiaProjects\ProjectBlog\Blog\Repositories\UserRepository\UsersRepositoryInt
 use ZoiaProjects\ProjectBlog\Blog\Repositories\CommentsRepository\CommentsRepositoryInterface;
 use ZoiaProjects\ProjectBlog\Blog\Repositories\CommentsRepository\SqliteCommentsRepository;
 use ZoiaProjects\ProjectBlog\Blog\Repositories\LikesRepository\LikesPostRepositoryInterface;
-use ZoiaProjects\ProjectBlog\Blog\Repositories\LikesRepository\SqliteLikesPostPostRepository;
+use ZoiaProjects\ProjectBlog\Blog\Repositories\LikesRepository\SqliteLikesPostRepository;
 use Dotenv\Dotenv;
 use ZoiaProjects\ProjectBlog\HTTP\Auth\AuthenticationInterface;
 use ZoiaProjects\ProjectBlog\HTTP\Auth\BearerTokenAuthentication;
@@ -111,7 +111,7 @@ $container->bind(
 );
 $container->bind(
     LikesPostRepositoryInterface::class,
-    SqliteLikesPostPostRepository::class
+    SqliteLikesPostRepository::class
 );
 $container->bind(
     LikesCommentRepositoryInterface::class,
